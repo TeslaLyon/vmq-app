@@ -1514,7 +1514,7 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
                     JSONObject result = new JSONObject(str);
                     int code = result.getInt("code");
                     String msg = result.getString("msg");
-                    if (code == 1 && msg.equals("成功")) {
+                    if (code == 1 && msg.equals("success")) {
                         //发送心跳监听日志
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                             sendMonitorLogs(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "\r\r\r\r" + "心跳返回：" + msg);
