@@ -15,6 +15,7 @@
     <string name="WeChat">打开微信扫一扫</string>
     <string name="url">通知地址：请手动配置</string>
     <string name="key">通讯密钥：请手动配置</string>
+    <string name="app_id">应用ID：请扫码配置</string>
     <string name="sm">扫码配置</string>
     <string name="pz">手动配置</string>
     <string name="xt">检测心跳</string>
