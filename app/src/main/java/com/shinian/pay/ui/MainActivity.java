@@ -1348,14 +1348,15 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
                 return;
             }
             String url = matcher.group(1);
+            String sign = matcher.group(2);
             String aid = matcher.group(3);
 
             String t = String.valueOf(new Date().getTime());
-            String sign = md5(t + matcher.group(2));
+            String signHash = md5(t + sign);
 
 
             OkHttpClient okHttpClient = new OkHttpClient();
-            Request request = new Request.Builder().url("http://" + url + "/appHeart?t=" + t + "&sign=" + sign + "&app_id=" + aid).method("GET", null).build();
+            Request request = new Request.Builder().url("http://" + url + "/appHeart?t=" + t + "&sign=" + signHash + "&app_id=" + aid).method("GET", null).build();
             Call call = okHttpClient.newCall(request);
             call.enqueue(new Callback() {
                 @Override
@@ -1433,13 +1434,14 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
                 }
 
                 String url = matcher.group(1);
+                String sign = matcher.group(2);
                 String aid = matcher.group(3);
                 
                 String t = String.valueOf(new Date().getTime());
-                String sign = md5(t + matcher.group(2));
+                String signHash = md5(t + sign);
 
                 OkHttpClient okHttpClient = new OkHttpClient();
-                Request request = new Request.Builder().url("http://" + url + "/appHeart?t=" + t + "&sign=" + sign + "&app_id=" + aid)
+                Request request = new Request.Builder().url("http://" + url + "/appHeart?t=" + t + "&sign=" + signHash + "&app_id=" + aid)
                         .method("GET", null).build();
                 Call call = okHttpClient.newCall(request);
                 call.enqueue(new Callback() {
