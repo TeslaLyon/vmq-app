@@ -59,8 +59,10 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements OnLongClickListener {
 
+    private final static String VMQ_VERSION = "2.0.1";
     private TextView txthost;
     private TextView txtkey;
+    private TextView txtAppId;
     private boolean isOk = false;
     private static final String TAG = "MainActivity";
     private static String host;
@@ -1373,6 +1375,7 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
             //将扫描出的信息显示出来
             txthost.setText(" 通知地址：" + url);
             txtkey.setText(" 通讯密钥：" + sign);
+            txtAppId.setText(" 应用ID：" + aid);
             host = url;
             key = sign;
             appId = aid;
