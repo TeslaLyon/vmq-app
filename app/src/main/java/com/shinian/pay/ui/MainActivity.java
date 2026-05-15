@@ -1341,7 +1341,7 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(AppConstants.INTENT_EXTRA_KEY_QR_SCAN);
 
-            Pattern pattern = Pattern.compile("^(https?://[^/]+)/([^/]+)/([^/]+)$");
+            Pattern pattern = Pattern.compile("^([^/]+)/([^/]+)/([^/]+)$");
             Matcher matcher = pattern.matcher(scanResult);
             if (!matcher.matches()) {
                 Toast.makeText(MainActivity.this, "二维码错误，请您扫描网站上显示的二维码!", Toast.LENGTH_SHORT).show();
@@ -1419,7 +1419,7 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
 
                 String scanResult = inputServer.getText().toString();
                 // 使用正则表达式提取URL、sign和app_id
-                Pattern pattern = Pattern.compile("^(https?://[^/]+)/([^/]+)/([^/]+)$");
+                Pattern pattern = Pattern.compile("^([^/]+)/([^/]+)/([^/]+)$");
                 Matcher matcher = pattern.matcher(scanResult);
 
                 // String[] tmp = scanResult.split("/");
