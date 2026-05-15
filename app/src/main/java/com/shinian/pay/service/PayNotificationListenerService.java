@@ -35,6 +35,7 @@ public class PayNotificationListenerService extends NotificationListenerService 
     private static final String TAG = "PayNotService";
     private String host = "";
     private String key = "";
+    private String appId = "";
     private Thread newThread = null;
     private PowerManager.WakeLock mWakeLock = null;
     private OkHttpClient okHttpClient; // 复用 OkHttpClient 实例
@@ -97,11 +98,12 @@ public class PayNotificationListenerService extends NotificationListenerService 
                 SharedPreferences read = getSharedPreferences("shinian", MODE_PRIVATE);
                 host = read.getString("host", "");
                 key = read.getString("key", "");
+                appId = read.getString("app_id", "");
 
                 String t = String.valueOf(new Date().getTime());
                 String sign = md5(t + key);
                 Request request = new Request.Builder()
-                        .url("http://" + host + "/appHeart?t=" + t + "&sign=" + sign)
+                        .url("http://" + host + "/appHeart?t=" + t + "&sign=" + sign + "&app_id=" + appId)
                         .method("GET", null)
                         .build();
 
@@ -167,6 +169,7 @@ public class PayNotificationListenerService extends NotificationListenerService 
         SharedPreferences read = getSharedPreferences("shinian", MODE_PRIVATE);
         host = read.getString("host", "");
         key = read.getString("key", "");
+        appId = read.getString("app_id", "");
         
         // 获取通知对象和包名（只获取一次）
         Notification notification = sbn.getNotification();
@@ -343,6 +346,7 @@ public class PayNotificationListenerService extends NotificationListenerService 
         SharedPreferences read = getSharedPreferences("shinian", MODE_PRIVATE);
         host = read.getString("host", "");
         key = read.getString("key", "");
+        appId = read.getString("app_id", "");
     
         // 格式化价格，避免精度问题（例如：0.1 变成 0.10000000000000000555）
         String priceStr = String.format("%.2f", price);
@@ -352,7 +356,7 @@ public class PayNotificationListenerService extends NotificationListenerService 
         // 构建请求 URL
         String t = String.valueOf(new Date().getTime());
         String sign = md5(type + priceStr + t + key);
-        String url = buildPushUrl(host, type, priceStr, t, sign);
+        String url = buildPushUrl(host, type, priceStr, t, sign, appId);
             
         Log.d(TAG, "appPush: URL:" + url);
     
@@ -447,7 +451,7 @@ public class PayNotificationListenerService extends NotificationListenerService 
     /**
      * 构建推送 URL（消除重复代码）
      */
-    private String buildPushUrl(String host, int type, String priceStr, String t, String sign) {
+    private String buildPushUrl(String host, int type, String priceStr, String t, String sign, String appId) {
         return "http://" +
                 host +
                 "/appPush?t=" +
@@ -457,7 +461,9 @@ public class PayNotificationListenerService extends NotificationListenerService 
                 "&price=" +
                 priceStr +
                 "&sign=" +
-                sign;
+                sign +
+                "&app_id=" +
+                appId;
     }
         
     /**
@@ -486,7 +492,7 @@ public class PayNotificationListenerService extends NotificationListenerService 
                 try {
                     String t = String.valueOf(new Date().getTime());
                     String sign = md5(type + priceStr + t + key);
-                    String url = buildPushUrl(host, type, priceStr, t, sign);
+                    String url = buildPushUrl(host, type, priceStr, t, sign, appId);
                         
                     // 同步请求（在子线程中执行）
                     String data = getHtml(url);

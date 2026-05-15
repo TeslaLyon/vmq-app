@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
         //查找组件
         txthost = findViewById(R.id.txt_host);
         txtkey = findViewById(R.id.txt_key);
+        txtAppId = findViewById(R.id.txt_app_id);
         LogsTextView = findViewById(R.id.state_logs);
         logs_linear_layout = findViewById(R.id.logs_linear_layout);
         LogsTextView.setOnLongClickListener(this);//长按
@@ -227,12 +228,15 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
         SharedPreferences read = getSharedPreferences("shinian", MODE_PRIVATE);
         host = read.getString("host", "");
         key = read.getString("key", "");
+        appId = read.getString("app_id", "");
 
-        if (host != null && key != null && host != "" && key != "") {
+        if (host != null && key != null && !host.isEmpty() && !key.isEmpty()) {
             txthost.setText(" 通知地址：" + host);
             txtkey.setText(" 通讯密钥：" + key);
+            txtAppId.setText(" 应用ID：" + appId);
             isOk = true;
         }
+        Toast.makeText(MainActivity.this, "V免签开源免费免签系统 v" + VMQ_VERSION, Toast.LENGTH_SHORT).show();
 
         Log.d(TAG, "========== MainActivity onCreate 完成 ==========");
 
@@ -1334,18 +1338,21 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(AppConstants.INTENT_EXTRA_KEY_QR_SCAN);
 
-            String[] tmp = scanResult.split("/");
-            if (tmp.length != 2) {
+            Pattern pattern = Pattern.compile("^(https?://[^/]+)/([^/]+)/([^/]+)$");
+            Matcher matcher = pattern.matcher(scanResult);
+            if (!matcher.matches()) {
                 Toast.makeText(MainActivity.this, "二维码错误，请您扫描网站上显示的二维码!", Toast.LENGTH_SHORT).show();
                 return;
             }
+            String url = matcher.group(1);
+            String aid = matcher.group(3);
 
             String t = String.valueOf(new Date().getTime());
-            String sign = md5(t + tmp[1]);
+            String sign = md5(t + matcher.group(2));
 
 
             OkHttpClient okHttpClient = new OkHttpClient();
-            Request request = new Request.Builder().url("http://" + tmp[0] + "/appHeart?t=" + t + "&sign=" + sign).method("GET", null).build();
+            Request request = new Request.Builder().url("http://" + url + "/appHeart?t=" + t + "&sign=" + sign + "&app_id=" + aid).method("GET", null).build();
             Call call = okHttpClient.newCall(request);
             call.enqueue(new Callback() {
                 @Override
@@ -1364,14 +1371,16 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
             //检查电池白名单权限
             ignoreBatteryOptimization(this);
             //将扫描出的信息显示出来
-            txthost.setText(" 通知地址：" + tmp[0]);
-            txtkey.setText(" 通讯密钥：" + tmp[1]);
-            host = tmp[0];
-            key = tmp[1];
+            txthost.setText(" 通知地址：" + url);
+            txtkey.setText(" 通讯密钥：" + sign);
+            host = url;
+            key = sign;
+            appId = aid;
 
             SharedPreferences.Editor editor = getSharedPreferences("shinian", MODE_PRIVATE).edit();
             editor.putString("host", host);
             editor.putString("key", key);
+            editor.putString("app_id", appId);
             editor.commit();
 
 
@@ -1405,17 +1414,28 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
             public void onClick(DialogInterface dialog, int which) {
 
                 String scanResult = inputServer.getText().toString();
-                String[] tmp = scanResult.split("/");
-                if (tmp.length != 2) {
-                    Toast.makeText(MainActivity.this, "数据不能为空或数据错误!", Toast.LENGTH_SHORT).show();
+                // 使用正则表达式提取URL、sign和app_id
+                Pattern pattern = Pattern.compile("^(https?://[^/]+)/([^/]+)/([^/]+)$");
+                Matcher matcher = pattern.matcher(scanResult);
+
+                // String[] tmp = scanResult.split("/");
+                // if (tmp.length != 2) {
+                //     Toast.makeText(MainActivity.this, "数据不能为空或数据错误!", Toast.LENGTH_SHORT).show();
+                //     return;
+                // }
+                if (!matcher.matches()) {
+                    Toast.makeText(MainActivity.this, "数据错误，请您输入网站上显示的配置数据!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
+                String url = matcher.group(1);
+                String aid = matcher.group(3);
+                
                 String t = String.valueOf(new Date().getTime());
-                String sign = md5(t + tmp[1]);
+                String sign = md5(t + matcher.group(2));
 
                 OkHttpClient okHttpClient = new OkHttpClient();
-                Request request = new Request.Builder().url("http://" + tmp[0] + "/appHeart?t=" + t + "&sign=" + sign)
+                Request request = new Request.Builder().url("http://" + url + "/appHeart?t=" + t + "&sign=" + sign + "&app_id=" + aid)
                         .method("GET", null).build();
                 Call call = okHttpClient.newCall(request);
                 call.enqueue(new Callback() {
@@ -1432,7 +1452,7 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
                     }
                 });
 
-                if (tmp[0].indexOf("localhost") >= 0) {
+                if (url.indexOf("localhost") >= 0) {
                     Toast.makeText(MainActivity.this, "配置信息错误，本机调试请访问 本机局域网IP:8080(如192.168.1.101:8080) 获取配置信息进行配置!",
                             Toast.LENGTH_LONG).show();
                     return;
@@ -1440,14 +1460,16 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
                 //检查电池白名单权限
                 ignoreBatteryOptimization(MainActivity.this);
                 //将配置的信息显示出来
-                txthost.setText(" 通知地址：" + tmp[0]);
-                txtkey.setText(" 通讯密钥：" + tmp[1]);
-                host = tmp[0];
-                key = tmp[1];
+                txthost.setText(" 通知地址：" + url);
+                txtkey.setText(" 通讯密钥：" + sign);
+                host = url;
+                key = sign;
+                appId = aid;
 
                 SharedPreferences.Editor editor = getSharedPreferences("shinian", MODE_PRIVATE).edit();
                 editor.putString("host", host);
                 editor.putString("key", key);
+                editor.putString("app_id", appId);
                 editor.commit();
 
             }
@@ -1466,7 +1488,7 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
         String sign = md5(t + key);
 
         OkHttpClient okHttpClient = new OkHttpClient();
-        Request request = new Request.Builder().url("http://" + host + "/appHeart?t=" + t + "&sign=" + sign)
+        Request request = new Request.Builder().url("http://" + host + "/appHeart?t=" + t + "&sign=" + sign + "&app_id=" + appId)
                 .method("GET", null).build();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
