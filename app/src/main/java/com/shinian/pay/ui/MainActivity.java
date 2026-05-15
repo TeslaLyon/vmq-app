@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
     private static final String TAG = "MainActivity";
     private static String host;
     private static String key;
+    private static String appId;
     public static TextView LogsTextView;
     private static LinearLayout logs_linear_layout;
     private int id = 0;
