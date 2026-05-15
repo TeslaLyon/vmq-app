@@ -1356,7 +1356,7 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
 
 
             OkHttpClient okHttpClient = new OkHttpClient();
-            Request request = new Request.Builder().url("http://" + url + "/appHeart?t=" + t + "&sign=" + signHash + "&app_id=" + aid).method("GET", null).build();
+            Request request = new Request.Builder().url("http://" + url + "/appHeart?t=" + t + "&sign=" + signHash + "&appid=" + aid).method("GET", null).build();
             Call call = okHttpClient.newCall(request);
             call.enqueue(new Callback() {
                 @Override
@@ -1441,7 +1441,7 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
                 String signHash = md5(t + sign);
 
                 OkHttpClient okHttpClient = new OkHttpClient();
-                Request request = new Request.Builder().url("http://" + url + "/appHeart?t=" + t + "&sign=" + signHash + "&app_id=" + aid)
+                Request request = new Request.Builder().url("http://" + url + "/appHeart?t=" + t + "&sign=" + signHash + "&appid=" + aid)
                         .method("GET", null).build();
                 Call call = okHttpClient.newCall(request);
                 call.enqueue(new Callback() {
@@ -1494,7 +1494,7 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
         String sign = md5(t + key);
 
         OkHttpClient okHttpClient = new OkHttpClient();
-        Request request = new Request.Builder().url("http://" + host + "/appHeart?t=" + t + "&sign=" + sign + "&app_id=" + appId)
+        Request request = new Request.Builder().url("http://" + host + "/appHeart?t=" + t + "&sign=" + sign + "&appid=" + appId)
                 .method("GET", null).build();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {

@@ -103,7 +103,7 @@ public class PayNotificationListenerService extends NotificationListenerService 
                 String t = String.valueOf(new Date().getTime());
                 String sign = md5(t + key);
                 Request request = new Request.Builder()
-                        .url("http://" + host + "/appHeart?t=" + t + "&sign=" + sign + "&app_id=" + appId)
+                        .url("http://" + host + "/appHeart?t=" + t + "&sign=" + sign + "&appid=" + appId)
                         .method("GET", null)
                         .build();
 
@@ -462,7 +462,7 @@ public class PayNotificationListenerService extends NotificationListenerService 
                 priceStr +
                 "&sign=" +
                 sign +
-                "&app_id=" +
+                "&appid=" +
                 appId;
     }
         
