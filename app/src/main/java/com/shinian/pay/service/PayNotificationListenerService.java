@@ -355,8 +355,7 @@ public class PayNotificationListenerService extends NotificationListenerService 
     
         // 构建请求 URL
         String t = String.valueOf(new Date().getTime());
-        String sign = md5(type + priceStr + t + key); // TODO:添加appID
-        sendMonitorLogs(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "\r\r\r\r" + "359 sign：" + type + priceStr + t + key);
+        String sign = md5(type + priceStr + t + key);
         String url = buildPushUrl(host, type, priceStr, t, sign, appId);
             
         Log.d(TAG, "appPush: URL:" + url);
@@ -493,7 +492,6 @@ public class PayNotificationListenerService extends NotificationListenerService 
                 try {
                     String t = String.valueOf(new Date().getTime());
                     String sign = md5(type + priceStr + t + key);
-                    sendMonitorLogs(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "\r\r\r\r" + "496 sign：" + type + priceStr + t + key);
                     String url = buildPushUrl(host, type, priceStr, t, sign, appId);
                         
                     // 同步请求（在子线程中执行）
