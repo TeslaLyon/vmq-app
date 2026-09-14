@@ -59,7 +59,6 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements OnLongClickListener {
 
-    private final static String VMQ_VERSION = "2.0.1";
     private TextView txthost;
     private TextView txtkey;
     private TextView txtAppId;
@@ -239,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements OnLongClickListen
             txtAppId.setText(" 应用ID：" + appId);
             isOk = true;
         }
-        Toast.makeText(MainActivity.this, "V免签开源免费免签系统 v" + VMQ_VERSION, Toast.LENGTH_SHORT).show();
 
         Log.d(TAG, "========== MainActivity onCreate 完成 ==========");
 
